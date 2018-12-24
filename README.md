@@ -57,7 +57,7 @@ plt.xkcd()
 
 
 
-    <contextlib._GeneratorContextManager at 0x1a1ca89390>
+    <contextlib._GeneratorContextManager at 0x1a0ced9668>
 
 
 
@@ -100,13 +100,6 @@ In the cell below:
 * `fit()` the KMeans object to the data stored in `X`.
 * Use the KMeans object to predict which clusters each data point belongs to by using the `Predict` method on the data stored in `X`.
 
-
-```python
-k_means = KMeans(n_clusters=6)
-k_means.fit(X)
-predicted_clusters = k_means.predict(X)
-```
-
 Now that we have the predicted clusters, let's visualize them both and compare the two. 
 
 In the cell below: 
@@ -117,6 +110,9 @@ In the cell below:
 
 
 ```python
+k_means = KMeans(n_clusters=6)
+k_means.fit(X)
+predicted_clusters = k_means.predict(X)
 centers = k_means.cluster_centers_
 
 plt.scatter(X[:, 0], X[:, 1], c=predicted_clusters, s=50, alpha=0.5)
@@ -125,7 +121,7 @@ plt.show()
 ```
 
 
-![png](index_files/index_9_0.png)
+![png](index_files/index_8_0.png)
 
 
 **_Question:_**
@@ -263,7 +259,7 @@ plt.show()
 ```
 
 
-![png](index_files/index_20_0.png)
+![png](index_files/index_19_0.png)
 
 
 **_Question:_**  Interpret the elbow plot we just created. Where is the "elbow" in this plot? According to this plot, how many clusters do you think actually exist in the dataset we created?
@@ -286,7 +282,7 @@ plt.show()
 ```
 
 
-![png](index_files/index_22_0.png)
+![png](index_files/index_21_0.png)
 
 
 We were right! The data does actually contain six clusters. Note that are other types of metrics that can also be used to evaluate the correct value for K, such as silhouette score. However, checking the variance ratio by calculating Calinski Harabaz Scores is one of the most tried-and-true methods, and should definitely be one of the first tools you reach for when trying to figure out the optimal value for K with K-Means Clustering. 
@@ -299,3 +295,54 @@ We should also note that for this example, we were able to visualize our data be
 ## Summary
 
 In this lesson, we learned how to use the K-Means Clustering algorithm in scikit-learn. We also learned a strategy for finding the optimal value for K by using elbow plots and variance ratios, for when we're working with data and we don't know how many clusters actually exist. 
+
+### Can we write this ourselves?
+
+
+```python
+X, y = make_blobs(n_samples=500, n_features=2, centers=4, cluster_std=0.8)
+```
+
+
+```python
+plt.scatter(X[:, 0], X[:, 1], c=y, s=50)
+```
+
+
+
+
+    <matplotlib.collections.PathCollection at 0x1a176efb38>
+
+
+
+
+![png](index_files/index_25_1.png)
+
+
+
+```python
+# first step of Kmeans is to randomly sample 4 points in the data
+```
+
+
+```python
+# yay, we can randomly sample clusters!!!!
+cluster_indices = np.random.choice(list(range(X.shape[0])), size=4)
+clusters = X[cluster_indices]
+clusters
+```
+
+
+
+
+    array([[  7.93677671,  -1.30303027],
+           [ -3.57405574,  -9.71330101],
+           [ -6.06342008,  -0.19349175],
+           [ -3.6496763 , -10.40400219]])
+
+
+
+
+```python
+# now, we can 
+```
