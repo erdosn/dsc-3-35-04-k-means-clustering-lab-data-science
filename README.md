@@ -45,6 +45,7 @@ import numpy as np
 from sklearn.datasets import make_blobs
 from sklearn.cluster import KMeans
 from sklearn.metrics import calinski_harabaz_score
+from collections import defaultdict
 
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -57,7 +58,7 @@ plt.xkcd()
 
 
 
-    <contextlib._GeneratorContextManager at 0x1a0ced9668>
+    <contextlib._GeneratorContextManager at 0x1a179bbba8>
 
 
 
@@ -327,9 +328,9 @@ plt.scatter(X[:, 0], X[:, 1], c=y, s=50)
 
 ```python
 # yay, we can randomly sample clusters!!!!
-cluster_indices = np.random.choice(list(range(X.shape[0])), size=4)
-clusters = X[cluster_indices]
-clusters
+centroid_indices = np.random.choice(list(range(X.shape[0])), size=4)
+centroids = X[cluster_indices]
+centroids
 ```
 
 
@@ -344,5 +345,125 @@ clusters
 
 
 ```python
-# now, we can 
+def euclidean_distance(x1, x2):
+    return np.sqrt(np.sum((x1 - x2)**2))
 ```
+
+
+```python
+def get_center_of_mass(lst):
+    arr = np.array(lst)
+    return arr.mean(axis=0)
+```
+
+
+```python
+euclidean_distance(np.array([0, 0]), np.array([3, 4]))
+```
+
+
+
+
+    5.0
+
+
+
+
+```python
+p1 = X[0]
+p1
+```
+
+
+
+
+    array([8.28394882, 0.7155532 ])
+
+
+
+
+```python
+# Yay! We can make a list of points for each centroid!!!!!!!!!!!!!!!!
+for iteration in range(5):
+    print("iteration {}".format(iteration))
+    centroid_dict = defaultdict(list)
+    for point in X:
+        # step 1: calculate the distance from our point to each centroid
+
+        distances = np.zeros(shape=(centroids.shape[0], 1))
+        for index, centroid in enumerate(centroids):
+            dist = euclidean_distance(centroid, point)
+            distances[index][0] = dist
+
+        # get index of smallest distance in distances array
+        centroid_index = distances.argmin()
+
+        # use index to find centroid from centroids array
+        chosen_centroid = centroids[centroid_index]
+        chosen_centroid
+
+        # append our point to that centroid's list of points
+        centroid_dict[tuple(chosen_centroid)].append(list(point))
+    
+    
+    new_centroids = []
+    for centroid, lst in centroid_dict.items():
+        new_centroids.append(get_center_of_mass(lst))
+    centroids = np.array(new_centroids)
+```
+
+    iteration 0
+    iteration 1
+    iteration 2
+    iteration 3
+    iteration 4
+
+
+
+```python
+centroids
+```
+
+
+
+
+    array([[  7.14019737,   2.58521557],
+           [ -2.75488123, -10.16217521],
+           [ -4.50408603,  -1.3486194 ],
+           [ -2.71634255,  -8.80985101]])
+
+
+
+
+```python
+kmean = KMeans(n_clusters=4)
+```
+
+
+```python
+kmean.fit(X)
+```
+
+
+
+
+    KMeans(algorithm='auto', copy_x=True, init='k-means++', max_iter=300,
+        n_clusters=4, n_init=10, n_jobs=1, precompute_distances='auto',
+        random_state=None, tol=0.0001, verbose=0)
+
+
+
+
+```python
+kmean.cluster_centers_
+```
+
+
+
+
+    array([[ 6.14490573,  5.51652346],
+           [-2.73792421, -9.56715256],
+           [-4.50408603, -1.3486194 ],
+           [ 8.13548902, -0.34609233]])
+
+
